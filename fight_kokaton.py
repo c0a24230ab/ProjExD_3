@@ -140,6 +140,18 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+class Score:
+    def __init__(self):
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.score = 0
+        self.color = (0, 0, 255)
+        self.img = self.fonto.render(f"スコア：{self.score}", 0, self.color)
+        self.center = (100, HEIGHT - 50)
+
+    def update(self, screen: pg.Surface):
+        self.img = self.fonto.render(f"スコア：{self.score}", 0, self.color)
+        screen.blit(self.img, self.center)
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -149,15 +161,18 @@ def main():
     beam = None
     # bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
+    score = Score()
     clock = pg.time.Clock()
     tmr = 0
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
-                beam = Beam(bird)          
+                beam = Beam(bird)
+
         screen.blit(bg_img, [0, 0])
         
         # if bomb is not None:
@@ -179,6 +194,7 @@ def main():
                     beam = None  # ビームを消す
                     bombs[j] = None  # 爆弾を消す
                     bird.change_img(6, screen)  # よろこびエフェクト
+                    score.score += 1 # スコア加算
             bombs = [bomb for bomb in bombs if bomb is not None]  # 撃ち落とされてない爆弾だけのリストにする
 
         key_lst = pg.key.get_pressed()
@@ -187,6 +203,8 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
+
+        score.update(screen) # スコアの表示    
         pg.display.update()
         tmr += 1
         clock.tick(50)
