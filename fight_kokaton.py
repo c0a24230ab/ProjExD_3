@@ -48,6 +48,7 @@ class Bird:
         (+5, +5): pg.transform.rotozoom(img, -45, 0.9),  # 右下
     }
 
+    
     def __init__(self, xy: tuple[int, int]):
         """
         こうかとん画像Surfaceを生成する
